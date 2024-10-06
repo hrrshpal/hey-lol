@@ -1,24 +1,24 @@
 const express = require("express");
+const {adminAuth, userAuth} = require("./middlewares/auth")
 
 const app = express();
 
-app.get("/", (req,res) => {
-    res.send("hey lol")
+app.use("/admin", adminAuth)
+app.use("/user", userAuth)
+
+app.get("/user", (req,res) => {
+    throw new Error("Error")
+    res.send("hey user, welcome to your feed")
 })
 
-app.post("/", (req,res) => {
-    // add user in the db
-    res.send("user added in the database")
+app.get("/admin", (req,res) => {
+    res.send("hey admin")
 })
 
-app.patch("/", (req,res) => {
-    // update user in the db
-    res.send("user updated")
-})
-
-app.delete("/", (req,res) => {
-    // remove user
-    res.send("user deleted")
+app.use("/", (err, req, res, next) => {
+    if(err){
+        res.status(500).send("Something went wrong")
+    }
 })
 
 app.listen(3000, ()=>{
